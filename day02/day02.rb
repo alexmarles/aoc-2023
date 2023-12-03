@@ -1,30 +1,28 @@
 # --- Day 2: Cube Conundrum ---
 
-CONFIG = {
-  red: 12,
-  green: 13,
-  blue: 14
-}
+R = 12
+G = 13
+B = 14
 
-RED_REGEX = /(\d+)\sred/
-BLUE_REGEX = /(\d+)\sblue/
-GREEN_REGEX = /(\d+)\sgreen/
+R_REGEX = /(\d+)\sred/
+G_REGEX = /(\d+)\sgreen/
+B_REGEX = /(\d+)\sblue/
+
+def enough_cubes?(set)
+  r = set.scan(R_REGEX).flatten.first.to_i
+  g = set.scan(G_REGEX).flatten.first.to_i
+  b = set.scan(B_REGEX).flatten.first.to_i
+  r <= R && g <= G && b <= B
+end
 
 def day02A(file)
   File
     .read(file)
     .split("\n")
-    .map do |line|
-      game, sets = line.split(':')
-      ok = true
-      sets.split(';').each do |set|
-        count_red = set.scan(RED_REGEX).flatten[0].to_i
-        count_green = set.scan(GREEN_REGEX).flatten[0].to_i
-        count_blue = set.scan(BLUE_REGEX).flatten[0].to_i
-        ok = count_red <= CONFIG[:red] && count_green <= CONFIG[:green] && count_blue <= CONFIG[:blue]
-        break unless ok
-      end
-      ok && game.split(' ')[1].to_i
+    .each_with_index
+    .map do |line, i|
+      _, sets = line.split(': ')
+      sets.split('; ').map { |set| enough_cubes? set }.all? && i + 1
     end
     .select(&:itself)
     .sum
@@ -35,19 +33,14 @@ def day02B(file)
     .read(file)
     .split("\n")
     .map do |line|
-      max_cubes = {
-        red: 0,
-        green: 0,
-        blue: 0
-      }
-      line
-        .split(':')[1]
-        .split(';').each do |set|
-          max_cubes[:red] = [set.scan(RED_REGEX).flatten[0].to_i, max_cubes[:red]].max
-          max_cubes[:green] = [set.scan(GREEN_REGEX).flatten[0].to_i, max_cubes[:green]].max
-          max_cubes[:blue] = [set.scan(BLUE_REGEX).flatten[0].to_i, max_cubes[:blue]].max
-        end
-      max_cubes.values.inject(:*)
+      _, sets = line.split(': ')
+      max_r, max_g, max_b = Array.new(3, 0)
+      sets.split('; ').each do |set|
+        max_r = [set.scan(R_REGEX).flatten[0].to_i, max_r].max
+        max_g = [set.scan(G_REGEX).flatten[0].to_i, max_g].max
+        max_b = [set.scan(B_REGEX).flatten[0].to_i, max_b].max
+      end
+      max_r * max_g * max_b
     end
     .sum
 end
