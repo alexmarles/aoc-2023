@@ -34,4 +34,20 @@ def day02B(file)
   File
     .read(file)
     .split("\n")
+    .map do |line|
+      max_cubes = {
+        red: 0,
+        green: 0,
+        blue: 0
+      }
+      line
+        .split(':')[1]
+        .split(';').each do |set|
+          max_cubes[:red] = [set.scan(RED_REGEX).flatten[0].to_i, max_cubes[:red]].max
+          max_cubes[:green] = [set.scan(GREEN_REGEX).flatten[0].to_i, max_cubes[:green]].max
+          max_cubes[:blue] = [set.scan(BLUE_REGEX).flatten[0].to_i, max_cubes[:blue]].max
+        end
+      max_cubes.values.inject(:*)
+    end
+    .sum
 end
