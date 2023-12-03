@@ -1,6 +1,14 @@
 Naming/MethodName:
   Enabled: false
+Naming/MethodParameterName:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
 Style/MutableConstant:
   Enabled: false
 Style/FrozenStringLiteralComment:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/AbcSize:
   Enabled: false
