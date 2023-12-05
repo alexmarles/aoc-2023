@@ -1,86 +1,62 @@
 # --- Day 5: If You Give A Seed A Fertilizer ---
 
 def day05A(file)
-  alm = {}
-  steps = []
-  File.read(file).split("\n\n").each_with_index do |l, i|
-    if i.zero?
-      type, nums = l.split(': ')
-      alm[type] = nums.split(' ').map(&:to_i)
-      next
-    end
-
-    type, nums = l.split(" map:\n")
-    alm[type] = []
-    steps << type
-    nums.split("\n").each do |n|
-      dst, src, rng = n.split(' ').map(&:to_i)
-      alm[type] << { dst:, src:, rng: }
-    end
-  end
-  alm['seeds'].map do |seed|
-    val = seed
+  seeds, *steps = File.read(file).split("\n\n")
+  seeds
+    .split(': ')[1]
+    .split
+    .map(&:to_i)
+    .map do |seed|
     steps.each do |step|
-      alm[step].each do |jump|
-        jump => { dst:, src:, rng: }
-        next unless (src..(src + rng - 1)).include?(val)
+      step
+        .split(" map:\n")[1]
+        .split("\n")
+        .map { |range| range.split.map(&:to_i) }
+        .each do |dst, src, rng|
+          next unless (src..(src + rng - 1)).include?(seed)
 
-        val = dst + val - src
-        break
-      end
+          seed = dst + seed - src
+          break
+        end
     end
-    val
-  end
-  .min
+    seed
+  end.min
 end
 
 def day05B(file)
-  alm = {}
-  steps = []
-  File.read(file).split("\n\n").each_with_index do |l, i|
-    if i.zero?
-      type, nums = l.split(': ')
-      nums = nums.split(' ').map(&:to_i)
-      alm[type] = []
-      i = 0
-      while i < nums.length
-        alm[type].append [nums[i], nums[i] + nums[i + 1]]
-        i += 2
-      end
-      next
-    end
+  seeds, *steps = File.read(file).split("\n\n")
+  seeds = seeds
+          .split(': ')[1]
+          .split
+          .map(&:to_i)
+          .each_slice(2)
+          .map { |seed| [seed[0], seed[0] + seed[1]] }
 
-    type, nums = l.split(" map:\n")
-    alm[type] = []
-    steps << type
-    nums.split("\n").each do |n|
-      dst, src, rng = n.split(' ').map(&:to_i)
-      alm[type] << { dst:, src:, rng: }
-    end
-  end
-
-  steps.each do |step| # for block in blocks
+  steps.each do |step|
     loc = []
     match = false
-    while alm['seeds'].any?
-      s, e = alm['seeds'].pop
+    while seeds.any?
+      s, e = seeds.pop
       match = false
-      alm[step].each do |jump| # for abc in ranges
-        jump => { dst:, src:, rng: }
-        os = [s, src].max
-        oe = [e, src + rng].min
+      step
+        .split(" map:\n")[1]
+        .split("\n")
+        .map { |range| range.split.map(&:to_i) }
+        .each do |dst, src, rng|
+          os = [s, src].max
+          oe = [e, src + rng].min
 
-        next unless os < oe
+          next unless os < oe
 
-        match = true
-        loc.append([os - src + dst, oe - src + dst])
-        alm['seeds'].append([s, os]) if os > s
-        alm['seeds'].append([oe, e]) if e > oe
-        break
-      end
+          loc.append([os - src + dst, oe - src + dst])
+          seeds.append([s, os]) if os > s
+          seeds.append([oe, e]) if e > oe
+          match = true
+          break
+        end
       loc.append([s, e]) unless match
     end
-    alm['seeds'] = loc
+    seeds = loc
   end
-  alm['seeds'].min.first
+  seeds.min.first
 end
