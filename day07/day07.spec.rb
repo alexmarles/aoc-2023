@@ -12,13 +12,13 @@ class Testday07A < Test::Unit::TestCase
     assert_equal 241_344_943, result
   end
 
-  # def test_example_day07_B
-  #   result = day07B 'day07/test.txt'
-  #   assert_equal 71_503, result
-  # end
+  def test_example_day07_B
+    result = day07B 'day07/test.txt'
+    assert_equal 5905, result
+  end
 
-  # def test_puzzle_day07_B
-  #   result = day07B 'day07/in.txt'
-  #   assert_equal 28_545_089, result
-  # end
+  def test_puzzle_day07_B
+    result = day07B 'day07/in.txt'
+    assert_equal 243_101_568, result
+  end
 end
