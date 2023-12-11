@@ -1,6 +1,6 @@
 # --- Day 10: Pipe Maze ---
 
-def parse_map(file)
+def parse_grid(file)
   File
     .read(file)
     .split("\n")
@@ -36,7 +36,7 @@ end
 def day10A(file)
   queue = []
   visited = Set.new
-  grid = parse_map(file)
+  grid = parse_grid(file)
   start = find_start(grid)
   queue.unshift start
   visited.add start
@@ -68,7 +68,7 @@ end
 def day10B(file)
   queue = []
   visited = Set.new
-  grid = parse_map(file)
+  grid = parse_grid(file)
   start = find_start(grid)
   queue.unshift start
   visited.add start
