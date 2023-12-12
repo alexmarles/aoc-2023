@@ -8,6 +8,8 @@ Style/MutableConstant:
   Enabled: false
 Style/FrozenStringLiteralComment:
   Enabled: false
+Style/GlobalVars:
+  Enabled: false
 Metrics/MethodLength:
   Enabled: false
 Metrics/AbcSize:

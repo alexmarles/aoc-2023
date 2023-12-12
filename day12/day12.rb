@@ -1,4 +1,6 @@
-# --- Day 11: Cosmic Expansion ---
+# --- Day 12: Hot Springs ---
+
+$pipes_cache = {}
 
 def count_arrangements(syms, nums)
   if syms.empty?
@@ -8,6 +10,10 @@ def count_arrangements(syms, nums)
   if nums.empty?
     return syms.include?('#') ? 0 : 1
   end
+
+  key = [syms, nums].join '-'
+
+  return $pipes_cache[key] if $pipes_cache.include? key
 
   result = 0
 
@@ -23,6 +29,7 @@ def count_arrangements(syms, nums)
     end
   end
 
+  $pipes_cache[key] = result
   result
 end
 
@@ -40,5 +47,14 @@ def day12A(file)
 end
 
 def day12B(file)
-  File.read(file).split("\n")
+  File
+    .read(file)
+    .split("\n")
+    .map do |l|
+      syms, nums = l.split(' ')
+      syms = ([syms] * 5).join('?').split('')
+      nums = ([nums] * 5).join(',').split(',').map(&:to_i)
+      count_arrangements(syms, nums.clone)
+    end
+    .sum
 end
