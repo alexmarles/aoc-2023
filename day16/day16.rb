@@ -83,12 +83,32 @@ def day16A(file)
     end
   grid[:max_row] = max_row
   grid[:max_col] = max_col
-  e = find_energized_cells(grid, [[0, -1, [0, 1]]])
-  e.size
+  find_energized_cells(grid, [[0, -1, [0, 1]]]).size
 end
 
 def day16B(file)
+  grid = {}
+  max_row = 0
+  max_col = 0
   File
     .read(file)
     .split("\n")
+    .map { |l| l.split('') }
+    .each_with_index do |row, r|
+      max_row = [max_row, r].max
+      row.each_with_index do |ch, c|
+        max_col = [max_col, c].max
+        grid[[r, c]] = ch if ch != '.'
+      end
+    end
+  grid[:max_row] = max_row
+  grid[:max_col] = max_col
+  [(0..max_row).map do |r|
+    [find_energized_cells(grid, [[r, -1, [0, 1]]]).size,
+     find_energized_cells(grid, [[r, max_col + 1, [0, -1]]]).size].max
+  end.max,
+   (0..max_col).map do |c|
+     [find_energized_cells(grid, [[-1, c, [1, 0]]]).size,
+      find_energized_cells(grid, [[max_row + 1, c, [-1, 0]]]).size].max
+   end.max].max
 end
