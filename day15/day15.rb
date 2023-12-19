@@ -11,5 +11,28 @@ def day15A(file)
 end
 
 def day15B(file)
-  File.read(file).split("\n").map { |l| l.split('') }
+  boxes = Array.new(256) { Array.new 0 }
+  File.read(file).strip.split(',').map do |step|
+    if step.include? '-'
+      label = step[..-2]
+      box = $hash_fn.call(label)
+      if (index = boxes[box].index { |l| l[0] == label })
+        boxes[box].delete_at index
+      end
+    else
+      label, focal = step.split('=')
+      box = $hash_fn.call(label)
+      focal = focal.to_i
+      if (index = boxes[box].index { |l| l[0] == label })
+        boxes[box][index] = [label, focal]
+      else
+        boxes[box] << [label, focal]
+      end
+    end
+  end
+  boxes.map.with_index(1) do |box, i|
+    box.map.with_index(1) do |lens, j|
+      i * j * lens[1]
+    end.sum
+  end.sum
 end
