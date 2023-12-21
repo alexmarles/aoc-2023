@@ -1,34 +1,38 @@
 # --- Day 21: Step Counter ---
 
-def day21A(file, remaining)
+def day21A(file, steps)
   grid = File.read(file).split("\n").map { |l| l.split('') }
-  start = []
+  sr = 0
+  sc = 0
   grid.each_with_index do |row, r|
     row.each_with_index do |cell, c|
-      start = [r, c] if cell == 'S'
+      if cell == 'S'
+        sr = r
+        sc = c
+      end
     end
   end
 
-  plots = [start]
+  plots = [].to_set
+  seen = [[sr, sc]].to_set
+  q = [[sr, sc, steps]]
 
-  remaining.times do
-    options = []
-    plots.each do |plot|
-      r, c = plot
-      [[0, -1], [0, 1], [-1, 0], [1, 0]].each do |dr, dc|
-        nr = r + dr
-        nc = c + dc
+  while q.any?
+    r, c, s = q.shift
 
-        next unless nr.positive? && nr < grid.length
+    plots.add [r, c] if s.even?
+    next if s.zero?
 
-        next unless nc.positive? && nc < grid[0].length
+    [[r, c - 1], [r, c + 1], [r - 1, c], [r + 1, c]].each do |nr, nc|
+      next unless nr.positive? && nr < grid.length
 
-        next unless grid[nr][nc] != '#' && !options.include?([nr, nc])
+      next unless nc.positive? && nc < grid[nr].length
 
-        options << [nr, nc]
-      end
+      next unless grid[nr][nc] != '#' && !seen.include?([nr, nc])
+
+      seen.add [nr, nc]
+      q.push [nr, nc, s - 1]
     end
-    plots = options
   end
   plots.length
 end
